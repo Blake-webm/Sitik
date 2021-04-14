@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Новый прикол</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Добавить прикол</h1>
+        <form method="post">
+            <input type="text" class="form-control" name="title" id="title" placeholder="Назавите прикол"><br>
+            <input type="number" class="form-control" name="price" id="price" placeholder="Введите цену прекола"><br>
+            <button class="btn btn-success" type="submit">Создать прикол</button>
+        </form>
+    </div>
+{% endblock %}
