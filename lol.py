@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 # базовый дизайн был взят из Boodstrap
@@ -19,7 +19,8 @@ class Item(db.Model):
 # делаем возможным отслеживание странички
 @obb.route("/")
 def home_index():
-    return render_template("main_title.html")
+    items = Item.query.order_by(Item.title).all()
+    return render_template("main_title.html", data=items)
 
 
 # страничка о нас
@@ -31,7 +32,18 @@ def about_us():
 # страничка создания
 @obb.route("/create", methods=['POST', "GET"])
 def create():
-    return render_template("create.html")
+    if request.method == "POST":
+        title = request.form["title"]
+        price = request.form["price"]
+        item = Item(title=title, price=price)
+        try:
+            db.session.add(item)
+            db.session.commit()
+            return redirect("/")
+        except:
+            return redirect("/create")
+    else:
+        return render_template("create.html")
 # проверяем какой файл запускаеться
 
 
