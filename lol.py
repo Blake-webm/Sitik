@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+from cloudipsp import Api, Checkout
+
 
 # базовый дизайн был взят из Boodstrap
 obb = Flask(__name__)
@@ -7,6 +9,14 @@ obb = Flask(__name__)
 obb.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///BigShop.db"
 obb.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(obb)
+db_user = SQLAlchemy(obb)
+# создание db
+
+
+class Item_user(db.Model):
+    id = db_user.Column(db.Integer, primary_key=True)
+    name = db_user.Column(db.String(10), nullable=False)
+    posward = db_user.Column(db.String(16), nullable=False)
 
 
 class Item(db.Model):
@@ -14,6 +24,10 @@ class Item(db.Model):
     title = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     isActive = db.Column(db.Boolean, default=True)
+    Text = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return self.title
 
 
 # делаем возможным отслеживание странички
@@ -22,11 +36,27 @@ def home_index():
     items = Item.query.order_by(Item.title).all()
     return render_template("main_title.html", data=items)
 
-
 # страничка о нас
 @obb.route("/about")
 def about_us():
     return render_template("aboutOfUs.html")
+
+
+# страничка оплаты
+@obb.route("/buy/<int:id>")
+def buy(id):
+    global url
+    item = Item.query.get(id)
+
+    api = Api(merchant_id=1396424,
+              secret_key='test')
+    checkout = Checkout(api=api)
+    data = {
+        "currency": "RUB",
+        "amount": str(item.price) + "00"
+    }
+    url = checkout.url(data).get('checkout_url')
+    return redirect(url)
 
 
 # страничка создания
@@ -35,7 +65,8 @@ def create():
     if request.method == "POST":
         title = request.form["title"]
         price = request.form["price"]
-        item = Item(title=title, price=price)
+        Text = request.form["Text"]
+        item = Item(title=title, price=price, Text=Text)
         try:
             db.session.add(item)
             db.session.commit()
@@ -48,4 +79,4 @@ def create():
 
 
 if __name__ == "__main__":
-    obb.run(debug=True)
+    obb.run(debug=False)
