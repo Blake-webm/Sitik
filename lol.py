@@ -59,6 +59,13 @@ def buy(id):
     return redirect(url)
 
 
+# ошибка удоления
+@obb.route("/error_dalate")
+def error_dalate():
+    return render_template("error_dalate.html")
+
+
+# удоление
 @obb.route("/<int:id>/del")
 def staf_del(id):
     item = Item.query.get_or_404(id)
@@ -67,7 +74,13 @@ def staf_del(id):
         db.session.commit()
         return redirect("/")
     except:
-        return "При удоление произошла ошибка"
+        return redirect("/error_dalate")
+
+
+# ошибка создания
+@obb.route("/error_craete")
+def error_craete():
+    return render_template("error_craete.html")
 
 
 # страничка создания
@@ -75,7 +88,10 @@ def staf_del(id):
 def create():
     if request.method == "POST":
         title = request.form["title"]
-        price = request.form["price"]
+        if int(request.form["price"]) > 0:
+            price = request.form["price"]
+        else:
+            return redirect("/error_craete")
         Text = request.form["Text"]
         item = Item(title=title, price=price, Text=Text)
         try:
