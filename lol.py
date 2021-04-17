@@ -36,6 +36,7 @@ def home_index():
     items = Item.query.order_by(Item.title).all()
     return render_template("main_title.html", data=items)
 
+
 # страничка о нас
 @obb.route("/about")
 def about_us():
@@ -45,7 +46,6 @@ def about_us():
 # страничка оплаты
 @obb.route("/buy/<int:id>")
 def buy(id):
-    global url
     item = Item.query.get(id)
 
     api = Api(merchant_id=1396424,
@@ -57,6 +57,17 @@ def buy(id):
     }
     url = checkout.url(data).get('checkout_url')
     return redirect(url)
+
+
+@obb.route("/<int:id>/del")
+def staf_del(id):
+    item = Item.query.get_or_404(id)
+    try:
+        db.session.delete(item)
+        db.session.commit()
+        return redirect("/")
+    except:
+        return "При удоление произошла ошибка"
 
 
 # страничка создания
@@ -78,5 +89,20 @@ def create():
 # проверяем какой файл запускаеться
 
 
+@obb.route("/<int:id>/update", methods=['POST', "GET"])
+def post_update(id):
+    arct = Item.query.get(id)
+    if request.method == "POST":
+        arct.title = request.form["title"]
+        arct.price = request.form["price"]
+        arct.Text = request.form["Text"]
+        try:
+            db.session.commit()
+            return redirect("/")
+        except:
+            return redirect("При изменение пприкола произошла ошибка")
+    else:
+        return render_template("update.html", db=arct)
+
 if __name__ == "__main__":
-    obb.run(debug=False)
+    obb.run(debug=True)

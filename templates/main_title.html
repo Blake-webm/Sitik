@@ -11,19 +11,26 @@
   </div>
 
     <div class="card-deck mb-3 text-center">
-      {% for el in data %}
-    <div class="card mb-4 rounded-3 shadow-sm">
-          <div class="card-header">
-            <h4 class="my-0 fw-normal">{{ el.title }}</h4>
-          </div>
-          <div class="card-body">
-            <h1 class="card-title pricing-card-title">{{ el.price }}<small class="text-muted fw-light">Руб</small></h1>
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>{{ el.Text }}</li>
-            </ul>
-            <a href="/buy/{{ el.id }}" class="w-100 btn btn-lg btn-outline-primary">Приобрести прикол</a>
-          </div>
-        </div>
-    {% endfor %}
+        {% if data|length > 0 %}
+            {% for el in data %}
+        <div class="card mb-4 rounded-3 shadow-sm">
+              <div class="card-header">
+                <h4 class="my-0 fw-normal">{{ el.title }}</h4>
+              </div>
+              <div class="card-body">
+                <h1 class="card-title pricing-card-title">{{ el.price }}<small class="text-muted fw-light">Руб</small></h1>
+                <ul class="list-unstyled mt-3 mb-4">
+                  <li>{{ el.Text }}</li>
+                </ul>
+                  <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
+                <a href="/buy/{{ el.id }}" class="w-100 btn btn-lg btn-outline-primary">Приобрести прикол</a>
+                  <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
+              </div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <h3 class="display-1 fw-normal">Здесь еще пока нет приколов</h3>
+        {% endif %}
+
   </div>
 {% endblock %}
