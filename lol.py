@@ -34,12 +34,14 @@ class Item(db.Model):
 # вход
 @obb.route("/sign_in", methods=['POST', "GET"])
 def sign_in():
+    global id_user
     if request.method == "POST":
         username1 = request.form["username"]
         posward = request.form["posward"]
         items = Item_user.query.order_by(Item_user.username).all()
         for el in items:
             if el.username == username1 and el.posward == posward:
+                id_user = el.id
                 return redirect("/")
         return render_template("login.html")
     else:
@@ -49,10 +51,15 @@ def sign_in():
 # регистрация
 @obb.route("/sign_up", methods=['POST', "GET"])
 def sign_up():
+    global id_user
     if request.method == "POST":
         username = request.form["username"]
         posward = request.form["posward"]
         items = Item_user(username=username, posward=posward)
+        itemz = Item_user.query.order_by(Item_user.username).all()
+        for el in itemz:
+            if el.username == username and el.posward == posward:
+                id_user = el.id
         try:
             db_user.session.add(items)
             db_user.session.commit()
@@ -66,8 +73,14 @@ def sign_up():
 # делаем возможным отслеживание странички
 @obb.route("/")
 def home_index():
-    items = Item.query.order_by(Item.title).all()
-    return render_template("main_title.html", data=items)
+    global id_user
+    try:
+        itemz = Item_user.query.get(id_user)
+        items = Item.query.order_by(Item.title).all()
+        return render_template("main_title.html", data=items, user=itemz.username)
+    except:
+        items = Item.query.order_by(Item.title).all()
+        return render_template("main_title.html", data=items)
 
 
 # страничка о нас
@@ -119,25 +132,29 @@ def error_craete():
 # страничка создания
 @obb.route("/create", methods=['POST', "GET"])
 def create():
-    if request.method == "POST":
-        title = request.form["title"]
-        if int(request.form["price"]) > 0:
-            price = request.form["price"]
+    global id_user
+    if id_user:
+        if request.method == "POST":
+            title = request.form["title"]
+            if int(request.form["price"]) > 0:
+                price = request.form["price"]
+            else:
+                return redirect("/error_craete")
+            Text = request.form["Text"]
+            item = Item(title=title, id_user=id_user, price=price, Text=Text)
+            try:
+                db.session.add(item)
+                db.session.commit()
+                return redirect("/")
+            except:
+                return redirect("/create")
         else:
-            return redirect("/error_craete")
-        Text = request.form["Text"]
-        item = Item(title=title, id_user=id_user, price=price, Text=Text)
-        try:
-            db.session.add(item)
-            db.session.commit()
-            return redirect("/")
-        except:
-            return redirect("/create")
+            return render_template("create.html")
     else:
-        return render_template("create.html")
+        return redirect("/sign_in")
+
+
 # проверяем какой файл запускаеться
-
-
 @obb.route("/<int:id>/update", methods=['POST', "GET"])
 def post_update(id):
     arct = Item.query.get(id)
