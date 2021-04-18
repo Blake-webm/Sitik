@@ -9,7 +9,7 @@
     {% if user %}
         <a class="me-3 py-2 text-blue text-decoration-none ">&ensp; &ensp;{{ user }}</a>
     {% else %}
-        <a class="me-3 py-2 text-blue text-decoration-none " href="/sign_in">&ensp; &ensp;Ввойт </a>
+        <a class="me-3 py-2 text-blue text-decoration-none " href="/sign_in">&ensp; &ensp;Вход</a>
 {% endif %}
 {% endblock %}
 
@@ -35,7 +35,7 @@
                     <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
                     <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
                     {% endif %}
-                    {% if user == "khan_kukla" %}
+                    {% if 1 == db_2 %}
                         <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
                         <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
                 {% endif %}

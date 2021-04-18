@@ -56,13 +56,13 @@ def sign_up():
         username = request.form["username"]
         posward = request.form["posward"]
         items = Item_user(username=username, posward=posward)
-        itemz = Item_user.query.order_by(Item_user.username).all()
-        for el in itemz:
-            if el.username == username and el.posward == posward:
-                id_user = el.id
         try:
             db_user.session.add(items)
             db_user.session.commit()
+            itemz = Item_user.query.order_by(Item_user.username).all()
+            for el in itemz:
+                if el.username == username and el.posward == posward:
+                    id_user = el.id
             return render_template("/")
         except:
             return redirect("/")
