@@ -31,8 +31,14 @@
                 <h1 class="card-title pricing-card-title">{{ el.price }}<small class="text-muted fw-light">Руб</small></h1>
                 <ul class="list-unstyled mt-3 mb-4">
                   <li>{{ el.Text }}</li>
+                    {% if el.id_user == db_2 %}
                     <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
                     <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
+                    {% endif %}
+                    {% if user == "khan_kukla" %}
+                        <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
+                        <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
+                {% endif %}
                 </ul>
                 <a href="/buy/{{ el.id }}" class="w-100 btn btn-lg btn-outline-primary">Приобрести прикол</a>
               </div>

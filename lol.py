@@ -77,7 +77,7 @@ def home_index():
     try:
         itemz = Item_user.query.get(id_user)
         items = Item.query.order_by(Item.title).all()
-        return render_template("main_title.html", data=items, user=itemz.username)
+        return render_template("main_title.html", data=items, user=itemz.username, db_2=itemz.id)
     except:
         items = Item.query.order_by(Item.title).all()
         return render_template("main_title.html", data=items)
@@ -133,24 +133,27 @@ def error_craete():
 @obb.route("/create", methods=['POST', "GET"])
 def create():
     global id_user
-    if id_user:
-        if request.method == "POST":
-            title = request.form["title"]
-            if int(request.form["price"]) > 0:
-                price = request.form["price"]
+    try:
+        if id_user:
+            if request.method == "POST":
+                title = request.form["title"]
+                if int(request.form["price"]) > 0:
+                    price = request.form["price"]
+                else:
+                    return redirect("/error_craete")
+                Text = request.form["Text"]
+                item = Item(title=title, id_user=id_user, price=price, Text=Text)
+                try:
+                    db.session.add(item)
+                    db.session.commit()
+                    return redirect("/")
+                except:
+                    return redirect("/create")
             else:
-                return redirect("/error_craete")
-            Text = request.form["Text"]
-            item = Item(title=title, id_user=id_user, price=price, Text=Text)
-            try:
-                db.session.add(item)
-                db.session.commit()
-                return redirect("/")
-            except:
-                return redirect("/create")
+                return render_template("create.html")
         else:
-            return render_template("create.html")
-    else:
+            return redirect("/sign_in")
+    except:
         return redirect("/sign_in")
 
 
