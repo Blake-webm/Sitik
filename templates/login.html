@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Вход</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Здравствуйте</h1>
+        <form method="post">
+            <input type="text" class="form-control" name="username" id="username" placeholder="Логин"><br>
+            <input type="text" class="form-control" name="posward" id="posward" placeholder="Пороль"><br>
+            <button class="btn btn-success" type="submit">Ввойти</button> <a class="me-3 py-2 text-blue text-decoration-none " href="/sign_up">&ensp;Зарегистрироваться </a>
+        </form>
+    </div>
+{% endblock %}

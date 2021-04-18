@@ -15,12 +15,13 @@ db_user = SQLAlchemy(obb)
 
 class Item_user(db.Model):
     id = db_user.Column(db.Integer, primary_key=True)
-    name = db_user.Column(db.String(10), nullable=False)
+    username = db_user.Column(db.String(10), nullable=False)
     posward = db_user.Column(db.String(16), nullable=False)
 
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer)
     title = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     isActive = db.Column(db.Boolean, default=True)
@@ -28,6 +29,38 @@ class Item(db.Model):
 
     def __repr__(self):
         return self.title
+
+
+# вход
+@obb.route("/sign_in", methods=['POST', "GET"])
+def sign_in():
+    if request.method == "POST":
+        username1 = request.form["username"]
+        posward = request.form["posward"]
+        items = Item_user.query.order_by(Item_user.username).all()
+        for el in items:
+            if el.username == username1 and el.posward == posward:
+                return redirect("/")
+        return render_template("login.html")
+    else:
+        return render_template("login.html")
+
+
+# регистрация
+@obb.route("/sign_up", methods=['POST', "GET"])
+def sign_up():
+    if request.method == "POST":
+        username = request.form["username"]
+        posward = request.form["posward"]
+        items = Item_user(username=username, posward=posward)
+        try:
+            db_user.session.add(items)
+            db_user.session.commit()
+            return render_template("/")
+        except:
+            return redirect("/")
+    else:
+        return render_template("register.html")
 
 
 # делаем возможным отслеживание странички
@@ -93,7 +126,7 @@ def create():
         else:
             return redirect("/error_craete")
         Text = request.form["Text"]
-        item = Item(title=title, price=price, Text=Text)
+        item = Item(title=title, id_user=id_user, price=price, Text=Text)
         try:
             db.session.add(item)
             db.session.commit()

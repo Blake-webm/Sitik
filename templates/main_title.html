@@ -4,6 +4,16 @@
 <title>BigShop</title>
 {% endblock %}
 
+
+{% block login %}
+    {% if user %}
+        <a class="me-3 py-2 text-blue text-decoration-none ">&ensp; &ensp;{{ user }}</a>
+    {% else %}
+        <a class="me-3 py-2 text-blue text-decoration-none " href="/sign_in">&ensp; &ensp;Ввойт </a>
+{% endif %}
+{% endblock %}
+
+
 {% block body %}
   <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
     <h1 class="display-4 fw-normal">Приколы легко и доступно</h1>
@@ -21,10 +31,10 @@
                 <h1 class="card-title pricing-card-title">{{ el.price }}<small class="text-muted fw-light">Руб</small></h1>
                 <ul class="list-unstyled mt-3 mb-4">
                   <li>{{ el.Text }}</li>
+                    <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
+                    <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
                 </ul>
-                  <a href="/{{ el.id }}/update" class="w-100 btn btn-lg btn-outline-success">Изменить</a>
                 <a href="/buy/{{ el.id }}" class="w-100 btn btn-lg btn-outline-primary">Приобрести прикол</a>
-                  <a href="/{{ el.id }}/del" class="w-100 btn btn-lg btn-outline-danger">Удалить</a>
               </div>
             </div>
         {% endfor %}
